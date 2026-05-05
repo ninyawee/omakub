@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Install asdcontrol
-git clone https://github.com/nikosdion/asdcontrol.git /tmp/asdcontrol
+git clone https://github.com/omakasui/asdcontrol.git /tmp/asdcontrol
 cd /tmp/asdcontrol
 make
 sudo make install
