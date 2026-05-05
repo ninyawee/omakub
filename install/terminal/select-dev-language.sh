@@ -10,7 +10,7 @@ fi
 
 install_php() {
   echo -e "Installing PHP...\n"
-  sudo apt-get -y install php --no-install-recommends
+  sudo apt-get -y install php composer --no-install-recommends
 
   # Install commonly used PHP extensions if available
   local extensions_to_install=(
@@ -32,11 +32,6 @@ install_php() {
         sudo apt-get install -y "php-$extension" --no-install-recommends
     fi
   done
-
-  # Install Composer globally
-  php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-  php composer-setup.php --quiet && sudo mv composer.phar /usr/local/bin/composer && sudo chmod +x /usr/local/bin/composer
-  rm -f composer-setup.php
 }
 
 if [[ -n "$languages" ]]; then

@@ -37,7 +37,6 @@ if [[ -n "$languages" ]]; then
         sudo apt-get remove -y php composer
       fi
       sudo apt-get autoremove -y
-      sudo rm -f /usr/local/bin/composer
       ;;
     "Python")
       echo -e "Removing Python...\n"
