@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # Install asdcontrol
+cd /tmp
 ASDCONTROL_VERSION=$(curl -s https://api.github.com/repos/omakasui/asdcontrol/releases/latest | grep -Po '"tag_name": "v\K[^"]*')
 wget -O asdcontrol.deb "https://github.com/omakasui/asdcontrol/releases/latest/download/asdcontrol_${ASDCONTROL_VERSION}_amd64.deb"
 sudo apt install -y ./asdcontrol.deb
