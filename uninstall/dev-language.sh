@@ -17,7 +17,6 @@ if [[ -n "$languages" ]]; then
       mise uninstall ruby --all
       mise rm -g ruby
       rm -f ~/.gemrc
-
       ;;
     "Node.js")
       echo -e "Removing Node.js...\n"
