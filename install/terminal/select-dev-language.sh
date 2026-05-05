@@ -67,7 +67,7 @@ if [[ -n "$languages" ]]; then
       echo -e "Installing Python...\n"
       mise use --global python@latest
       echo -e "\nInstalling uv...\n"
-      mise use -global uv@latest
+      mise use --global uv@latest
       ;;
     "Elixir")
       echo -e "Installing Elixir...\n"
