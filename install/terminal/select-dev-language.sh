@@ -10,7 +10,7 @@ fi
 
 install_php() {
   echo -e "Installing PHP...\n"
-  sudo apt -y install php --no-install-recommends
+  sudo apt-get -y install php --no-install-recommends
 
   # Install commonly used PHP extensions if available
   local extensions_to_install=(
