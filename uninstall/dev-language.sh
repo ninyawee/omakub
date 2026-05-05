@@ -8,36 +8,47 @@ else
   languages=$(gum choose "${AVAILABLE_LANGUAGES[@]}" --no-limit --height 10 --header "Select programming languages to uninstall")
 fi
 
-if [[ -n $languages ]]; then
-  for language in $languages; do
+if [[ -n "$languages" ]]; then
+  mapfile -t selected_languages <<< "$languages"
+  for language in "${selected_languages[@]}"; do
     case $language in
-    Ruby)
-      mise uninstall ruby@3.4
-      mise x ruby -- gem uninstall rails
+    "Ruby on Rails")
+      echo -e "Removing Ruby on Rails...\n"
+      mise uninstall -g ruby@latest
+      mise settings remove idiomatic_version_file_enable_tools ruby
+      mise x ruby -- gem uninstall rails --all --ignore-dependencies --no-document
+
       ;;
-    Node.js)
-      mise uninstall node@lts
+    "Node.js")
+      echo -e "Removing Node.js...\n"
+      mise uninstall -g node@lts
       ;;
-    Go)
-      mise uninstall go@latest
+    "Go")
+      echo -e "Removing Go...\n"
+      mise uninstall -g go@latest
       ;;
-    PHP)
-      sudo apt -y purge php php-{curl,apcu,intl,mbstring,opcache,pgsql,mysql,sqlite3,redis,xml,zip}
-      sudo apt -y autoremove
-      sudo rm /usr/local/bin/composer
+    "PHP")
+      echo -e "Removing PHP...\n"
+      sudo apt-get remove -y php php-* composer
+      sudo apt-get autoremove -y
+      sudo rm -f /usr/local/bin/composer
       ;;
-    Python)
-      mise uninstall python@latest
+    "Python")
+      echo -e "Removing Python...\n"
+      mise uninstall -g python@latest
       ;;
-    Elixir)
-      mise uninstall elixir@latest
-      mise uninstall erlang@latest
+    "Elixir")
+      echo -e "Removing Elixir...\n"
+      mise uninstall -g elixir@latest
+      mise uninstall -g erlang@latest
       ;;
-    Rust)
+    "Rust")
+      echo -e "Removing Rust...\n"
       rustup self uninstall -y
       ;;
-    Java)
-      mise uninstall java@latest
+    "Java")
+      echo -e "Removing Java...\n"
+      mise uninstall -g java@latest
       ;;
     esac
   done
