@@ -14,41 +14,53 @@ if [[ -n "$languages" ]]; then
     case $language in
     "Ruby on Rails")
       echo -e "Removing Ruby on Rails...\n"
-      mise uninstall -g ruby@latest
-      mise settings remove idiomatic_version_file_enable_tools ruby
-      mise x ruby -- gem uninstall rails --all --ignore-dependencies --no-document
+      mise uninstall ruby --all
+      mise rm -g ruby
+      rm -f ~/.gemrc
 
       ;;
     "Node.js")
       echo -e "Removing Node.js...\n"
-      mise uninstall -g node@lts
+      mise uninstall node --all
+      mise rm -g node
       ;;
     "Go")
       echo -e "Removing Go...\n"
-      mise uninstall -g go@latest
+      mise uninstall go --all
+      mise rm -g go
       ;;
     "PHP")
       echo -e "Removing PHP...\n"
-      sudo apt-get remove -y php php-* composer
+      mapfile -t php_packages < <(dpkg-query -W -f='${binary:Package}\n' 'php-*' 2>/dev/null || true)
+      if ((${#php_packages[@]})); then
+        sudo apt-get remove -y php "${php_packages[@]}" composer
+      else
+        sudo apt-get remove -y php composer
+      fi
       sudo apt-get autoremove -y
       sudo rm -f /usr/local/bin/composer
       ;;
     "Python")
       echo -e "Removing Python...\n"
-      mise uninstall -g python@latest
+      mise uninstall python --all
+      mise rm -g python
+      rm -rf ~/.local/bin/uv ~/.local/bin/uvx ~/.cargo/bin/uv 2>/dev/null || true
       ;;
     "Elixir")
       echo -e "Removing Elixir...\n"
-      mise uninstall -g elixir@latest
-      mise uninstall -g erlang@latest
+      mise uninstall elixir --all
+      mise uninstall erlang --all
+      mise rm -g elixir
+      mise rm -g erlang
       ;;
     "Rust")
       echo -e "Removing Rust...\n"
-      rustup self uninstall -y
+      rustup self uninstall -y 2>/dev/null || true
       ;;
     "Java")
       echo -e "Removing Java...\n"
-      mise uninstall -g java@latest
+      mise uninstall java --all
+      mise rm -g java
       ;;
     esac
   done
