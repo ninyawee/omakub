@@ -40,9 +40,10 @@ install_php() {
 }
 
 if [[ -n "$languages" ]]; then
-  for language in $languages; do
+  mapfile -t selected_languages <<< "$languages"
+  for language in "${selected_languages[@]}"; do
     case $language in
-    Ruby)
+    "Ruby on Rails")
       echo -e "Installing Ruby on Rails...\n"
       mise settings add ruby.compile false
       mise settings add idiomatic_version_file_enable_tools ruby
@@ -51,34 +52,34 @@ if [[ -n "$languages" ]]; then
       mise x ruby -- gem install rails --no-document
       echo -e "\nYou can now run: rails new myproject"
       ;;
-    Node.js)
+    "Node.js")
       echo -e "Installing Node.js...\n"
       mise use --global node
       ;;
-    Go)
+    "Go")
       echo -e "Installing Go...\n"
       mise use --global go@latest
       ;;
-    PHP)
+    "PHP")
       install_php
       ;;
-    Python)
+    "Python")
       echo -e "Installing Python...\n"
       mise use --global python@latest
       echo -e "\nInstalling uv...\n"
       curl -fsSL https://astral.sh/uv/install.sh | sh
       ;;
-    Elixir)
+    "Elixir")
       echo -e "Installing Elixir...\n"
       mise use --global erlang@latest
       mise use --global elixir@latest
       mise x elixir -- mix local.hex --force
       ;;
-    Rust)
+    "Rust")
       echo -e "Installing Rust...\n"
       bash -c "$(curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs)" -- -y
       ;;
-    Java)
+    "Java")
       echo -e "Installing Java...\n"
       mise use --global java@latest
       ;;
