@@ -26,12 +26,17 @@ install_php() {
     xml
     zip
   )
+  local available_extensions=()
 
   for extension in "${extensions_to_install[@]}"; do
     if apt-cache show "php-$extension" &>/dev/null; then
-        sudo apt-get install -y "php-$extension" --no-install-recommends
+      available_extensions+=("php-$extension")
     fi
   done
+
+  if [[ ${#available_extensions[@]} -gt 0 ]]; then
+    sudo apt-get install -y --no-install-recommends "${available_extensions[@]}"
+  fi
 }
 
 if [[ -n "$languages" ]]; then
