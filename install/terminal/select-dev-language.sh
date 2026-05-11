@@ -29,7 +29,10 @@ install_php() {
   local available_extensions=()
 
   for extension in "${extensions_to_install[@]}"; do
-    if apt-cache show "php-$extension" &>/dev/null; then
+    local candidate
+    candidate=$(apt-cache policy "php-$extension" 2>/dev/null | awk '/Candidate:/ {print $2}')
+
+    if [[ -n "$candidate" && "$candidate" != "(none)" ]]; then
       available_extensions+=("php-$extension")
     fi
   done
