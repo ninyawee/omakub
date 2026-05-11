@@ -1,4 +1,4 @@
 #!/bin/bash
 
-# Logout to pickup changes
+# Reboot to pick up changes
 gum confirm "Ready to reboot for all settings to take effect?" && sudo systemctl reboot -i || true
