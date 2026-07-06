@@ -8,36 +8,58 @@ else
   languages=$(gum choose "${AVAILABLE_LANGUAGES[@]}" --no-limit --height 10 --header "Select programming languages to uninstall")
 fi
 
-if [[ -n $languages ]]; then
-  for language in $languages; do
+if [[ -n "$languages" ]]; then
+  mapfile -t selected_languages <<< "$languages"
+  for language in "${selected_languages[@]}"; do
     case $language in
-    Ruby)
-      mise uninstall ruby@3.4
-      mise x ruby -- gem uninstall rails
+    "Ruby on Rails")
+      echo -e "Removing Ruby on Rails...\n"
+      mise uninstall ruby --all
+      mise rm -g ruby
+      rm -f ~/.gemrc
       ;;
-    Node.js)
-      mise uninstall node@lts
+    "Node.js")
+      echo -e "Removing Node.js...\n"
+      mise uninstall node --all
+      mise rm -g node
       ;;
-    Go)
-      mise uninstall go@latest
+    "Go")
+      echo -e "Removing Go...\n"
+      mise uninstall go --all
+      mise rm -g go
       ;;
-    PHP)
-      sudo apt -y purge php php-{curl,apcu,intl,mbstring,opcache,pgsql,mysql,sqlite3,redis,xml,zip}
-      sudo apt -y autoremove
-      sudo rm /usr/local/bin/composer
+    "PHP")
+      echo -e "Removing PHP...\n"
+      mapfile -t php_packages < <(dpkg-query -W -f='${binary:Package}\n' 'php-*' 2>/dev/null || true)
+      if ((${#php_packages[@]})); then
+        sudo apt-get remove -y php "${php_packages[@]}" composer
+      else
+        sudo apt-get remove -y php composer
+      fi
+      sudo rm -f /usr/local/bin/composer
+      sudo apt-get autoremove -y
       ;;
-    Python)
-      mise uninstall python@latest
+    "Python")
+      echo -e "Removing Python...\n"
+      mise uninstall python --all
+      mise rm -g python
+      rm -rf ~/.local/bin/uv ~/.local/bin/uvx ~/.cargo/bin/uv 2>/dev/null || true
       ;;
-    Elixir)
-      mise uninstall elixir@latest
-      mise uninstall erlang@latest
+    "Elixir")
+      echo -e "Removing Elixir...\n"
+      mise uninstall elixir --all
+      mise uninstall erlang --all
+      mise rm -g elixir
+      mise rm -g erlang
       ;;
-    Rust)
-      rustup self uninstall -y
+    "Rust")
+      echo -e "Removing Rust...\n"
+      rustup self uninstall -y 2>/dev/null || true
       ;;
-    Java)
-      mise uninstall java@latest
+    "Java")
+      echo -e "Removing Java...\n"
+      mise uninstall java --all
+      mise rm -g java
       ;;
     esac
   done

@@ -8,38 +8,82 @@ else
   languages=$(gum choose "${AVAILABLE_LANGUAGES[@]}" --no-limit --height 10 --header "Select programming languages")
 fi
 
+install_php() {
+  echo -e "Installing PHP...\n"
+  sudo apt-get -y install php composer --no-install-recommends
+
+  # Install commonly used PHP extensions if available
+  local extensions_to_install=(
+    curl
+    apcu
+    intl
+    mbstring
+    opcache
+    pgsql
+    mysql
+    sqlite3
+    redis
+    xml
+    zip
+  )
+  local available_extensions=()
+
+  for extension in "${extensions_to_install[@]}"; do
+    local candidate
+    candidate=$(apt-cache policy "php-$extension" 2>/dev/null | awk '/Candidate:/ {print $2}')
+
+    if [[ -n "$candidate" && "$candidate" != "(none)" ]]; then
+      available_extensions+=("php-$extension")
+    fi
+  done
+
+  if [[ ${#available_extensions[@]} -gt 0 ]]; then
+    sudo apt-get install -y --no-install-recommends "${available_extensions[@]}"
+  fi
+}
+
 if [[ -n "$languages" ]]; then
-  for language in $languages; do
+  mapfile -t selected_languages <<< "$languages"
+  for language in "${selected_languages[@]}"; do
     case $language in
-    Ruby)
-      mise use --global ruby@latest
+    "Ruby on Rails")
+      echo -e "Installing Ruby on Rails...\n"
+      mise settings add ruby.compile false
       mise settings add idiomatic_version_file_enable_tools ruby
+      mise use --global ruby@latest
+      echo "gem: --no-document" >~/.gemrc
       mise x ruby -- gem install rails --no-document
+      echo -e "\nYou can now run: rails new myproject"
       ;;
-    Node.js)
-      mise use --global node@lts
+    "Node.js")
+      echo -e "Installing Node.js...\n"
+      mise use --global node
       ;;
-    Go)
+    "Go")
+      echo -e "Installing Go...\n"
       mise use --global go@latest
       ;;
-    PHP)
-      sudo apt -y install php php-{curl,apcu,intl,mbstring,opcache,pgsql,mysql,sqlite3,redis,xml,zip} --no-install-recommends
-      php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-      php composer-setup.php --quiet && sudo mv composer.phar /usr/local/bin/composer
-      rm composer-setup.php
+    "PHP")
+      install_php
       ;;
-    Python)
+    "Python")
+      echo -e "Installing Python...\n"
       mise use --global python@latest
+      echo -e "\nInstalling uv...\n"
+      mise use --global uv@latest
       ;;
-    Elixir)
+    "Elixir")
+      echo -e "Installing Elixir...\n"
       mise use --global erlang@latest
       mise use --global elixir@latest
       mise x elixir -- mix local.hex --force
       ;;
-    Rust)
+    "Rust")
+      echo -e "Installing Rust...\n"
       bash -c "$(curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs)" -- -y
       ;;
-    Java)
+    "Java")
+      echo -e "Installing Java...\n"
       mise use --global java@latest
       ;;
     esac
