@@ -10,6 +10,7 @@ Watch the introduction video and read more at [omakub.org](https://omakub.org).
 
 - Upstream [PR #600](https://github.com/basecamp/omakub/pull/600) — reboot handling, dev-language install/uninstall robustness, a maintained `asdcontrol` fork, and space-bar extension schema compat.
 - A fix for [#604](https://github.com/basecamp/omakub/issues/604) — several themes referenced Yaru icon variants and `accent-color` values that don't exist on 26.04's Yaru package / GNOME 47+'s accent enum. `OMAKUB_THEME_COLOR` (Yaru variant) and `OMAKUB_GNOME_ACCENT` (accent-color) are now set independently per theme.
+- Fewer GNOME mods — Ubuntu 26.04's native dock, tray icons, tiling, and desktop icons are polished enough now that Omakub no longer turns them off. Dropped the third-party extension stack that used to replace them (Tactile, Just Perfection, Blur My Shell, Space Bar, Undecorate, TopHat, AlphabeticalAppGrid); kept only Omakub's theme colors/wallpaper, dock favorite-apps list, app-folders, and existing keybindings.
 
 Known gap: [#607](https://github.com/basecamp/omakub/issues/607) (keyboard shortcuts misbehaving on 26.04) is unfixed — no diagnosed root cause yet.
 
